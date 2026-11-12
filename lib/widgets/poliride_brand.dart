@@ -41,26 +41,6 @@ class PolirideBrand extends StatelessWidget {
             ],
           ),
         ),
-        if (showBadge) ...[
-          const SizedBox(width: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              color: const Color(0xFFDCFCE7),
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: const Color(0xFF86EFAC), width: 1),
-            ),
-            child: const Text(
-              'PINANG SIRIH',
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w800,
-                color: Color(0xFF15803D),
-                letterSpacing: 0.6,
-              ),
-            ),
-          ),
-        ],
       ],
     );
 
