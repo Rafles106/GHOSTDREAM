@@ -6,6 +6,8 @@ import '../models/user_model.dart';
 import '../services/ride_service.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/poliride_brand.dart';
+import 'aktivitas_screen.dart';
+import 'profil_screen.dart';
 import 'location_picker_screen.dart';
 import 'login_screen.dart';
 import 'map_screen.dart';
@@ -23,7 +25,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   late UserModel currentUser;
   int _currentNavIndex = 0;
 
-  String _selectedPickupSpot = 'Gedung GFS';
+  String _selectedPickupSpot = 'Gedung SFS';
   final String _selectedDestinationSpot = 'Gerbang Depan';
   bool _hasActiveOrder = true;
 
@@ -33,11 +35,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     currentUser = widget.user ??
         UserModel(
           id: 'USR-2024-001',
-          npm: '22753012',
-          name: 'Garbon',
-          email: 'garbon@student.polinela.ac.id',
-          major: 'Teknologi Informasi / Teknologi Rekayasa Perangkat Lunak',
-          balance: 25750.0,
+          npm: '2341720001',
+          name: 'Gorbon',
+          email: 'gorbon@polinema.ac.id',
+          major: 'Teknologi Informasi / D-IV TI',
+          balance: 0.0,
           points: 1250,
           tier: 'Gold',
         );
@@ -254,66 +256,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  void _showTopUpDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Row(
-          children: [
-            Icon(Icons.account_balance_wallet_rounded, color: Color(0xFF0284C7)),
-            SizedBox(width: 8),
-            Text('Isi Saldo PoliRIDE'),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Pilih nominal top up cepat melalui Virtual Account atau Kasir Kampus:',
-              style: TextStyle(fontSize: 13, color: Color(0xFF64748B)),
-            ),
-            const SizedBox(height: 14),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [10000, 20000, 50000].map((amt) {
-                return OutlinedButton(
-                  onPressed: () {
-                    setState(() {
-                      currentUser = currentUser.copyWith(
-                        balance: currentUser.balance + amt,
-                      );
-                    });
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Berhasil menambah saldo Rp $amt!'),
-                        backgroundColor: const Color(0xFF16A34A),
-                      ),
-                    );
-                  },
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFF0284C7)),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  ),
-                  child: Text('Rp $amt'),
-                );
-              }).toList(),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Tutup'),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _showCancelOrderDialog() {
     showDialog(
       context: context,
@@ -403,55 +345,64 @@ class _DashboardScreenState extends State<DashboardScreen> {
         automaticallyImplyLeading: false,
         title: const PolirideBrand(fontSize: 19),
         actions: [
-          InkWell(
-            onTap: _showTopUpDialog,
-            borderRadius: BorderRadius.circular(20),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(
-                color: const Color(0xFFE0F2FE),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: const Color(0xFFBAE6FD)),
-              ),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.account_balance_wallet_outlined,
-                    size: 15,
-                    color: Color(0xFF0284C7),
-                  ),
-                  const SizedBox(width: 5),
-                  Text(
-                    'Rp ${currentUser.balance.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF0369A1),
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  Container(
-                    width: 16,
-                    height: 16,
+          IconButton(
+            icon: Stack(
+              children: [
+                const Icon(Icons.notifications_none_rounded, color: Color(0xFF0F172A), size: 24),
+                Positioned(
+                  top: 2,
+                  right: 2,
+                  child: Container(
+                    width: 8,
+                    height: 8,
                     decoration: const BoxDecoration(
-                      color: Color(0xFF0284C7),
+                      color: Color(0xFFEF4444),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.add, size: 12, color: Colors.white),
                   ),
-                ],
+                ),
+              ],
+            ),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Tidak ada notifikasi baru.')),
+              );
+            },
+          ),
+          InkWell(
+            onTap: () {
+              setState(() => _currentNavIndex = 2);
+            },
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+              margin: const EdgeInsets.only(right: 14, left: 4),
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: const Color(0xFF0284C7),
+                border: Border.all(color: const Color(0xFFBAE6FD), width: 1.5),
+              ),
+              child: const Center(
+                child: Icon(Icons.person, color: Colors.white, size: 20),
               ),
             ),
           ),
-          const SizedBox(width: 12),
         ],
       ),
       body: IndexedStack(
         index: _currentNavIndex,
         children: [
           _buildHomeScreen(),
-          _buildActivityScreen(),
-          _buildAccountScreen(),
+          AktivitasScreen(
+            user: currentUser,
+            onReorder: (pickup, destination) => _showBookingSheet(pickup: pickup, destination: destination),
+            onBackToHome: () => setState(() => _currentNavIndex = 0),
+          ),
+          ProfilScreen(
+            user: currentUser,
+            onLogout: _handleLogout,
+          ),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -493,7 +444,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'NIM: ${currentUser.npm} • Mahasiswa TRPL',
+                    'NIM: ${currentUser.npm} • ${currentUser.major}',
                     style: const TextStyle(
                       fontSize: 12,
                       color: Color(0xFF64748B),
@@ -869,139 +820,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
           const SizedBox(height: 20),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildActivityScreen() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(18),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Riwayat & Aktivitas Pesanan',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF0F172A),
-            ),
-          ),
-          const SizedBox(height: 12),
-          if (_hasActiveOrder) ...[
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFBAE6FD)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'PoliRide Sedang Berjalan',
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF0284C7)),
-                      ),
-                      Text('Rp 3.000', style: TextStyle(fontWeight: FontWeight.bold)),
-                    ],
-                  ),
-                  const Divider(height: 20),
-                  const Text('Driver: Badar (Honda Beat - BE 1234 XY)', style: TextStyle(fontSize: 13)),
-                  const SizedBox(height: 4),
-                  const Text('Jemput: Gedung GFS ➔ Gerbang Depan', style: TextStyle(fontSize: 12, color: Color(0xFF64748B))),
-                  const SizedBox(height: 14),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: _showCancelOrderDialog,
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.red,
-                            side: const BorderSide(color: Colors.red),
-                          ),
-                          child: const Text('Batalkan'),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              _hasActiveOrder = false;
-                            });
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Perjalanan selesai. Terima kasih!')),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF16A34A)),
-                          child: const Text('Selesai', style: TextStyle(color: Colors.white)),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ] else ...[
-            const Center(
-              child: Padding(
-                padding: EdgeInsets.all(40.0),
-                child: Text('Tidak ada pesanan aktif saat ini.', style: TextStyle(color: Color(0xFF94A3B8))),
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAccountScreen() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(18),
-      child: Column(
-        children: [
-          CircleAvatar(
-            radius: 40,
-            backgroundColor: const Color(0xFF0284C7),
-            child: Text(
-              currentUser.name[0],
-              style: const TextStyle(fontSize: 30, color: Colors.white, fontWeight: FontWeight.bold),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            currentUser.name,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            currentUser.email,
-            style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
-          ),
-          const SizedBox(height: 24),
-          Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            child: Column(
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.security, color: Color(0xFF0284C7)),
-                  title: const Text('Bantuan & Darurat (SOS)'),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: _showEmergencyDialog,
-                ),
-                const Divider(height: 1),
-                ListTile(
-                  leading: const Icon(Icons.logout, color: Colors.red),
-                  title: const Text('Keluar Akun', style: TextStyle(color: Colors.red)),
-                  onTap: _handleLogout,
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );

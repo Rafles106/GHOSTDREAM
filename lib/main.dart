@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'screens/aktivitas_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/location_picker_screen.dart';
 import 'screens/login_screen.dart';
+import 'screens/profil_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/splash_screen.dart';
+import 'widgets/poliride_brand.dart';
 
 void main() {
   runApp(const PolirideApp());
@@ -43,6 +46,20 @@ class PolirideApp extends StatelessWidget {
         '/register': (context) => const RegisterScreen(),
         '/dashboard': (context) => const DashboardScreen(),
         '/location-picker': (context) => const LocationPickerScreen(),
+        '/aktivitas': (context) => Scaffold(
+              appBar: AppBar(
+                title: const PolirideBrand(fontSize: 19),
+                elevation: 0.5,
+              ),
+              body: const AktivitasScreen(),
+            ),
+        '/profil': (context) => Scaffold(
+              appBar: AppBar(
+                title: const PolirideBrand(fontSize: 19),
+                elevation: 0.5,
+              ),
+              body: const ProfilScreen(),
+            ),
       },
     );
   }

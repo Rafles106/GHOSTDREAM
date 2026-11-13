@@ -17,6 +17,13 @@ class RideOrder {
   final String? review;
   final String paymentMethod;
   final String? foodItems;
+  final String? pickupNote;
+  final String? destinationNote;
+  final String? plateNumber;
+  final int? driverTrips;
+  final String? cancellationReason;
+  final String? cancellationType;
+  final String? driverNote;
 
   const RideOrder({
     required this.id,
@@ -31,7 +38,14 @@ class RideOrder {
     this.driverRating = 4.9,
     required this.status,
     this.review,
-    this.paymentMethod = 'Saldo PoliRIDE (Non-tunai)',
+    this.paymentMethod = 'Tunai (Bayar Langsung ke Driver)',
     this.foodItems,
+    this.pickupNote,
+    this.destinationNote,
+    this.plateNumber,
+    this.driverTrips,
+    this.cancellationReason,
+    this.cancellationType,
+    this.driverNote,
   });
 }
