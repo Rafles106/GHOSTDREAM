@@ -5,11 +5,13 @@ import 'login_screen.dart';
 class ProfilScreen extends StatefulWidget {
   final UserModel? user;
   final VoidCallback? onLogout;
+  final Function(UserModel updatedUser)? onUserUpdated;
 
   const ProfilScreen({
     super.key,
     this.user,
     this.onLogout,
+    this.onUserUpdated,
   });
 
   @override
@@ -19,6 +21,399 @@ class ProfilScreen extends StatefulWidget {
 class _ProfilScreenState extends State<ProfilScreen> {
   bool _autoPickupEnabled = true;
   String _preferredPayment = 'Tunai (Bayar Langsung ke Driver)';
+
+  // Profil state variables yang bisa diedit
+  late String _userName;
+  late String _userNim;
+  late String _userAngkatan;
+  late String _userEmail;
+  late String _userPhone;
+  late String _userMajor;
+  late int _userPoints;
+  late String _userTier;
+  int _selectedAvatarIndex = 0;
+
+  // Pilihan tema avatar
+  final List<List<Color>> _avatarGradients = [
+    [const Color(0xFF38BDF8), const Color(0xFF0284C7)], // Biru Poliride
+    [const Color(0xFF34D399), const Color(0xFF059669)], // Hijau Emerald
+    [const Color(0xFFA78BFA), const Color(0xFF7C3AED)], // Ungu Modern
+    [const Color(0xFFFBBF24), const Color(0xFFD97706)], // Oranye Amber
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    final u = widget.user;
+    _userName = u?.name ?? 'Gorbon';
+    _userNim = u?.npm ?? '2341720001';
+    _userAngkatan = (u?.angkatan.isNotEmpty == true) ? u!.angkatan : '2023';
+    _userEmail = u?.email ?? 'gorbon@polinema.ac.id';
+    _userPhone = (u?.phone.isNotEmpty == true) ? u!.phone : '+62 812-3456-7890';
+    _userMajor = u?.major ?? 'Teknologi Informasi / D-IV TI';
+    _userPoints = u?.points ?? 1250;
+    _userTier = u?.tier ?? 'Gold';
+  }
+
+  @override
+  void didUpdateWidget(ProfilScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.user != oldWidget.user && widget.user != null) {
+      final u = widget.user!;
+      setState(() {
+        _userName = u.name;
+        _userNim = u.npm;
+        _userAngkatan = u.angkatan.isNotEmpty ? u.angkatan : _userAngkatan;
+        _userEmail = u.email;
+        _userPhone = u.phone.isNotEmpty ? u.phone : _userPhone;
+        _userMajor = u.major;
+        _userPoints = u.points;
+        _userTier = u.tier;
+      });
+    }
+  }
+
+  void _showEditProfileModal(BuildContext context) {
+    final nameController = TextEditingController(text: _userName);
+    final nimController = TextEditingController(text: _userNim);
+    final angkatanController = TextEditingController(text: _userAngkatan);
+    final majorController = TextEditingController(text: _userMajor);
+    final emailController = TextEditingController(text: _userEmail);
+    final phoneController = TextEditingController(text: _userPhone);
+    int tempAvatarIndex = _selectedAvatarIndex;
+
+    final formKey = GlobalKey<FormState>();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Container(
+              height: MediaQuery.of(context).size.height * 0.85,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: Column(
+                children: [
+                  // Handle bar
+                  Container(
+                    margin: const EdgeInsets.only(top: 12, bottom: 8),
+                    width: 44,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFCBD5E1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+
+                  // Header Edit
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Row(
+                          children: [
+                            Icon(Icons.edit_note_rounded, color: Color(0xFF0284C7), size: 26),
+                            SizedBox(width: 8),
+                            Text(
+                              'Edit Data Akun & Profil',
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF0F172A),
+                              ),
+                            ),
+                          ],
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close, color: Color(0xFF64748B)),
+                          onPressed: () => Navigator.pop(ctx),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(height: 1),
+
+                  // Form Fields
+                  Expanded(
+                    child: Form(
+                      key: formKey,
+                      child: ListView(
+                        padding: const EdgeInsets.all(20),
+                        children: [
+                          // Pilih Avatar Style
+                          const Text(
+                            'Pilih Warna / Gaya Avatar',
+                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: List.generate(_avatarGradients.length, (idx) {
+                              final isSelected = tempAvatarIndex == idx;
+                              return GestureDetector(
+                                onTap: () {
+                                  setModalState(() {
+                                    tempAvatarIndex = idx;
+                                  });
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                                  width: 48,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: LinearGradient(
+                                      colors: _avatarGradients[idx],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                    border: Border.all(
+                                      color: isSelected ? const Color(0xFF0F172A) : Colors.transparent,
+                                      width: 3,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: _avatarGradients[idx][1].withOpacity(0.3),
+                                        blurRadius: 6,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  child: isSelected
+                                      ? const Center(child: Icon(Icons.check, color: Colors.white, size: 22))
+                                      : null,
+                                ),
+                              );
+                            }),
+                          ),
+                          const SizedBox(height: 20),
+
+                          // Field Nama Lengkap
+                          _buildEditField(
+                            controller: nameController,
+                            label: 'Nama Lengkap Mahasiswa',
+                            icon: Icons.person_outline_rounded,
+                            validator: (val) {
+                              if (val == null || val.trim().isEmpty) {
+                                return 'Nama tidak boleh kosong';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 14),
+
+                          // Field NIM & Angkatan (Row)
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: _buildEditField(
+                                  controller: nimController,
+                                  label: 'NIM / NPM Mahasiswa',
+                                  icon: Icons.badge_outlined,
+                                  keyboardType: TextInputType.number,
+                                  validator: (val) {
+                                    if (val == null || val.trim().isEmpty) {
+                                      return 'NIM wajib diisi';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                flex: 2,
+                                child: _buildEditField(
+                                  controller: angkatanController,
+                                  label: 'Angkatan',
+                                  icon: Icons.calendar_today_outlined,
+                                  keyboardType: TextInputType.number,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 14),
+
+                          // Field Fakultas / Jurusan
+                          _buildEditField(
+                            controller: majorController,
+                            label: 'Jurusan / Program Studi',
+                            icon: Icons.school_outlined,
+                          ),
+                          const SizedBox(height: 14),
+
+                          // Field Email Kampus
+                          _buildEditField(
+                            controller: emailController,
+                            label: 'Email Resmi Kampus',
+                            icon: Icons.email_outlined,
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+                          const SizedBox(height: 14),
+
+                          // Field No. WhatsApp
+                          _buildEditField(
+                            controller: phoneController,
+                            label: 'Nomor WhatsApp / HP Aktif',
+                            icon: Icons.phone_android_rounded,
+                            keyboardType: TextInputType.phone,
+                          ),
+                          const SizedBox(height: 24),
+
+                          // Tombol Simpan & Batal
+                          Row(
+                            children: [
+                              Expanded(
+                                child: OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    side: const BorderSide(color: Color(0xFFCBD5E1)),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                    padding: const EdgeInsets.symmetric(vertical: 14),
+                                  ),
+                                  onPressed: () => Navigator.pop(ctx),
+                                  child: const Text('Batal', style: TextStyle(color: Color(0xFF64748B), fontWeight: FontWeight.bold)),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                flex: 2,
+                                child: ElevatedButton.icon(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF0284C7),
+                                    foregroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                    padding: const EdgeInsets.symmetric(vertical: 14),
+                                    elevation: 2,
+                                  ),
+                                  icon: const Icon(Icons.save_rounded, size: 18),
+                                  label: const Text('Simpan Perubahan', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                                  onPressed: () {
+                                    if (formKey.currentState?.validate() ?? false) {
+                                      final newName = nameController.text.trim();
+                                      final newNim = nimController.text.trim();
+                                      final newAngkatan = angkatanController.text.trim();
+                                      final newMajor = majorController.text.trim();
+                                      final newEmail = emailController.text.trim();
+                                      final newPhone = phoneController.text.trim();
+
+                                      setState(() {
+                                        _userName = newName;
+                                        _userNim = newNim;
+                                        _userAngkatan = newAngkatan;
+                                        _userMajor = newMajor;
+                                        _userEmail = newEmail;
+                                        _userPhone = newPhone;
+                                        _selectedAvatarIndex = tempAvatarIndex;
+                                      });
+
+                                      // Callback to parent DashboardScreen
+                                      final updatedUser = (widget.user ??
+                                              UserModel(
+                                                id: 'USR-2024-001',
+                                                npm: newNim,
+                                                name: newName,
+                                                email: newEmail,
+                                                major: newMajor,
+                                              ))
+                                          .copyWith(
+                                        name: newName,
+                                        npm: newNim,
+                                        angkatan: newAngkatan,
+                                        major: newMajor,
+                                        email: newEmail,
+                                        phone: newPhone,
+                                      );
+
+                                      if (widget.onUserUpdated != null) {
+                                        widget.onUserUpdated!(updatedUser);
+                                      }
+
+                                      Navigator.pop(ctx);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Row(
+                                            children: [
+                                              Icon(Icons.check_circle_rounded, color: Colors.white, size: 20),
+                                              SizedBox(width: 8),
+                                              Text('Profil mahasiswa berhasil diperbarui! 🎉'),
+                                            ],
+                                          ),
+                                          backgroundColor: Color(0xFF16A34A),
+                                          behavior: SnackBarBehavior.floating,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildEditField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    TextInputType keyboardType = TextInputType.text,
+    String? Function(String?)? validator,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF475569)),
+        ),
+        const SizedBox(height: 6),
+        TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          validator: validator,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+          decoration: InputDecoration(
+            prefixIcon: Icon(icon, color: const Color(0xFF0284C7), size: 20),
+            filled: true,
+            fillColor: const Color(0xFFF8FAFC),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFF0284C7), width: 1.5),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFFEF4444)),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.5),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
   void _handleLogout() {
     showDialog(
@@ -172,14 +567,6 @@ class _ProfilScreenState extends State<ProfilScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = widget.user;
-    final userName = user?.name ?? 'Gorbon';
-    final userNim = user?.npm ?? '2341720001';
-    final userEmail = user?.email ?? 'gorbon@polinema.ac.id';
-    final userMajor = user?.major ?? 'Teknologi Informasi / D-IV TI';
-    final userPoints = user?.points ?? 1250;
-    final userTier = user?.tier ?? 'Gold';
-
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Column(
@@ -213,8 +600,8 @@ class _ProfilScreenState extends State<ProfilScreen> {
                           height: 62,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF38BDF8), Color(0xFF0284C7)],
+                            gradient: LinearGradient(
+                              colors: _avatarGradients[_selectedAvatarIndex],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             ),
@@ -244,7 +631,7 @@ class _ProfilScreenState extends State<ProfilScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            userName,
+                            _userName,
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -253,12 +640,12 @@ class _ProfilScreenState extends State<ProfilScreen> {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            'NIM: $userNim • Angkatan 2023',
+                            'NIM: $_userNim • Angkatan $_userAngkatan',
                             style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            userMajor,
+                            _userMajor,
                             style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF0284C7)),
                           ),
                         ],
@@ -266,17 +653,14 @@ class _ProfilScreenState extends State<ProfilScreen> {
                     ),
                     OutlinedButton.icon(
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Color(0xFFCBD5E1)),
+                        side: const BorderSide(color: Color(0xFF0284C7)),
+                        backgroundColor: const Color(0xFFF0F9FF),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                       ),
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Form edit profil terbuka.')),
-                        );
-                      },
-                      icon: const Icon(Icons.edit_outlined, size: 13, color: Color(0xFF475569)),
-                      label: const Text('Edit', style: TextStyle(fontSize: 11, color: Color(0xFF475569))),
+                      onPressed: () => _showEditProfileModal(context),
+                      icon: const Icon(Icons.edit_outlined, size: 14, color: Color(0xFF0284C7)),
+                      label: const Text('Edit', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF0284C7))),
                     ),
                   ],
                 ),
@@ -295,9 +679,9 @@ class _ProfilScreenState extends State<ProfilScreen> {
                     children: [
                       _buildStatColumn('48', 'Perjalanan', Icons.route_rounded, const Color(0xFF0284C7)),
                       Container(height: 32, width: 1, color: const Color(0xFFCBD5E1)),
-                      _buildStatColumn('${userPoints.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}', 'Poin', Icons.stars_rounded, const Color(0xFFEAB308)),
+                      _buildStatColumn('${_userPoints.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}', 'Poin', Icons.stars_rounded, const Color(0xFFEAB308)),
                       Container(height: 32, width: 1, color: const Color(0xFFCBD5E1)),
-                      _buildStatColumn(userTier, 'Tier Member', Icons.military_tech_rounded, const Color(0xFFF59E0B)),
+                      _buildStatColumn(_userTier, 'Tier Member', Icons.military_tech_rounded, const Color(0xFFF59E0B)),
                     ],
                   ),
                 ),
@@ -315,13 +699,9 @@ class _ProfilScreenState extends State<ProfilScreen> {
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
               ),
               InkWell(
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Sinkronisasi data SSO Polinema aktif.')),
-                  );
-                },
+                onTap: () => _showEditProfileModal(context),
                 child: const Text(
-                  'Lihat Detail',
+                  'Ubah Data ✎',
                   style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF0284C7)),
                 ),
               ),
@@ -342,7 +722,8 @@ class _ProfilScreenState extends State<ProfilScreen> {
                   iconColor: const Color(0xFF0284C7),
                   iconBg: const Color(0xFFE0F2FE),
                   title: 'Fakultas & Jurusan',
-                  subtitle: 'Teknologi Informasi / D-IV TI',
+                  subtitle: _userMajor,
+                  onTap: () => _showEditProfileModal(context),
                 ),
                 const Divider(height: 1, indent: 56),
                 _buildProfileItem(
@@ -350,10 +731,11 @@ class _ProfilScreenState extends State<ProfilScreen> {
                   iconColor: const Color(0xFF0284C7),
                   iconBg: const Color(0xFFE0F2FE),
                   title: 'Email Kampus',
-                  subtitle: userEmail,
+                  subtitle: _userEmail,
                   trailingBadge: 'Terverifikasi',
                   badgeColor: const Color(0xFF16A34A),
                   badgeBg: const Color(0xFFDCFCE7),
+                  onTap: () => _showEditProfileModal(context),
                 ),
                 const Divider(height: 1, indent: 56),
                 _buildProfileItem(
@@ -361,10 +743,11 @@ class _ProfilScreenState extends State<ProfilScreen> {
                   iconColor: const Color(0xFF0284C7),
                   iconBg: const Color(0xFFE0F2FE),
                   title: 'No. WhatsApp',
-                  subtitle: '+62 812-3456-7890',
+                  subtitle: _userPhone,
                   trailingBadge: 'Aktif',
                   badgeColor: const Color(0xFF16A34A),
                   badgeBg: const Color(0xFFDCFCE7),
+                  onTap: () => _showEditProfileModal(context),
                 ),
                 const Divider(height: 1, indent: 56),
                 _buildProfileItem(
@@ -374,6 +757,7 @@ class _ProfilScreenState extends State<ProfilScreen> {
                   title: 'KTM Digital',
                   subtitle: 'Terverifikasi Mahasiswa Aktif',
                   trailing: const Icon(Icons.check_circle_rounded, color: Color(0xFF16A34A), size: 18),
+                  onTap: () => _showEditProfileModal(context),
                 ),
               ],
             ),
@@ -615,8 +999,10 @@ class _ProfilScreenState extends State<ProfilScreen> {
     Color? badgeColor,
     Color? badgeBg,
     Widget? trailing,
+    VoidCallback? onTap,
   }) {
     return ListTile(
+      onTap: onTap,
       leading: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
@@ -643,7 +1029,7 @@ class _ProfilScreenState extends State<ProfilScreen> {
                 ),
               ),
             )
-          : trailing,
+          : (trailing ?? const Icon(Icons.edit_outlined, size: 16, color: Color(0xFF94A3B8))),
     );
   }
 }

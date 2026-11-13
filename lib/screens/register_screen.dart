@@ -125,7 +125,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 // Title
                 const Text(
-                  'Daftar Akun Mahasiswa',
+                  'Daftar Akun Pengemudi',
                   style: TextStyle(
                     color: Color(0xFF0F172A),
                     fontSize: 22,
@@ -134,7 +134,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 4),
                 const Text(
-                  'Bergabung bersama ribuan mahasiswa lainnya di kampus.',
+                  'Bergabung menjadi mitra pengemudi resmi kampus Politeknik Negeri Lampung / Polinema',
                   style: TextStyle(fontSize: 13, color: Color(0xFF64748B)),
                 ),
                 const SizedBox(height: 20),

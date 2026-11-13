@@ -123,11 +123,11 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Logo & Branding PoliRIDE PINANG SIRIH
+                // Logo & Branding PoliRIDE DRIVER
                 const PolirideBigLogo(size: 82),
                 const SizedBox(height: 8),
                 const Text(
-                  'Poli-Ride Ojek Kampus Polinela',
+                  'Portal Operasional Pengemudi Mitra',
                   style: TextStyle(
                     fontSize: 13,
                     color: Color(0xFF64748B),
@@ -157,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'Masuk Akun Mahasiswa',
+                          'Masuk Akun Pengemudi',
                           style: TextStyle(
                             fontSize: 19,
                             fontWeight: FontWeight.bold,
@@ -166,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(height: 4),
                         const Text(
-                          'Gunakan NIM, No. WhatsApp, atau Email Kampus',
+                          'Gunakan ID Driver, Nomor WhatsApp, atau Email',
                           style: TextStyle(
                             fontSize: 12,
                             color: Color(0xFF64748B),
@@ -177,13 +177,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         // Input Field NIM / WhatsApp / Email
                         CustomTextField(
                           controller: _npmController,
-                          label: 'NIM / No. WhatsApp / Email Kampus',
-                          hintText: 'Contoh: 22753012 atau email kampus',
+                          label: 'NPM Driver / No. WhatsApp / Email Polinela',
+                          hintText: 'Contoh: 247012 atau email driver',
                           prefixIcon: Icons.badge_outlined,
                           keyboardType: TextInputType.text,
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'NIM, No. WhatsApp atau Email wajib diisi';
+                              return 'ID Driver, No. WhatsApp atau Email wajib diisi';
                             }
                             return null;
                           },
@@ -301,12 +301,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             onPressed: _openRegistration,
                             child: const Text(
-                              'DAFTAR AKUN',
+                              'Daftar Jadi Driver POLIRIDE',
                               style: TextStyle(
                                 color: Color(0xFF0284C7),
                                 fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                                letterSpacing: 0.5,
+                                fontSize: 13,
+                                letterSpacing: 0.3,
                               ),
                             ),
                           ),

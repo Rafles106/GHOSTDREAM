@@ -5,6 +5,9 @@ class PolirideBrand extends StatelessWidget {
   final double fontSize;
   final bool showBadge;
   final bool isCenter;
+  final String badgeText;
+  final Color? badgeBgColor;
+  final Color? badgeTextColor;
 
   const PolirideBrand({
     super.key,
@@ -12,6 +15,9 @@ class PolirideBrand extends StatelessWidget {
     this.fontSize = 22,
     this.showBadge = true,
     this.isCenter = false,
+    this.badgeText = 'MITRA',
+    this.badgeBgColor,
+    this.badgeTextColor,
   });
 
   @override
@@ -46,16 +52,16 @@ class PolirideBrand extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
             decoration: BoxDecoration(
-              color: const Color(0xFFDCFCE7),
+              color: badgeBgColor ?? const Color(0xFFDCFCE7),
               borderRadius: BorderRadius.circular(6),
               border: Border.all(color: const Color(0xFF86EFAC)),
             ),
-            child: const Text(
-              'MAHASISWA',
+            child: Text(
+              badgeText,
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF15803D),
+                color: badgeTextColor ?? const Color(0xFF15803D),
                 letterSpacing: 0.6,
               ),
             ),

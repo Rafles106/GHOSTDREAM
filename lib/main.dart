@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'screens/aktivitas_screen.dart';
+import 'models/driver_model.dart';
+import 'screens/akun_screen.dart';
+import 'screens/beranda_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/location_picker_screen.dart';
 import 'screens/login_screen.dart';
-import 'screens/profil_screen.dart';
+import 'screens/penghasilan_screen.dart';
+import 'screens/pesanan_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/splash_screen.dart';
 import 'widgets/poliride_brand.dart';
@@ -18,7 +21,7 @@ class PolirideApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'POLIRIDE PINANG SIRIH - Ojek Kampus Polineks',
+      title: 'POLIRIDE DRIVER - Portal Pengemudi Mitra',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
@@ -38,7 +41,6 @@ class PolirideApp extends StatelessWidget {
         ),
         fontFamily: 'Roboto',
       ),
-      // Membuka SplashScreen yang secara otomatis beralih ke LoginScreen
       home: const SplashScreen(),
       routes: {
         '/splash': (context) => const SplashScreen(),
@@ -46,19 +48,33 @@ class PolirideApp extends StatelessWidget {
         '/register': (context) => const RegisterScreen(),
         '/dashboard': (context) => const DashboardScreen(),
         '/location-picker': (context) => const LocationPickerScreen(),
-        '/aktivitas': (context) => Scaffold(
+        '/beranda': (context) => Scaffold(
               appBar: AppBar(
-                title: const PolirideBrand(fontSize: 19),
+                title: const PolirideBrand(fontSize: 19, badgeText: 'MITRA'),
                 elevation: 0.5,
               ),
-              body: const AktivitasScreen(),
+              body: const BerandaScreen(driver: DriverModel()),
             ),
-        '/profil': (context) => Scaffold(
+        '/pesanan': (context) => Scaffold(
               appBar: AppBar(
-                title: const PolirideBrand(fontSize: 19),
+                title: const PolirideBrand(fontSize: 19, badgeText: 'MITRA'),
                 elevation: 0.5,
               ),
-              body: const ProfilScreen(),
+              body: const PesananScreen(driver: DriverModel()),
+            ),
+        '/penghasilan': (context) => Scaffold(
+              appBar: AppBar(
+                title: const PolirideBrand(fontSize: 19, badgeText: 'MITRA'),
+                elevation: 0.5,
+              ),
+              body: const PenghasilanScreen(driver: DriverModel()),
+            ),
+        '/akun': (context) => Scaffold(
+              appBar: AppBar(
+                title: const PolirideBrand(fontSize: 19, badgeText: 'MITRA'),
+                elevation: 0.5,
+              ),
+              body: const AkunScreen(driver: DriverModel()),
             ),
       },
     );
