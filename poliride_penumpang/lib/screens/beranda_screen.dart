@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/campus_spot_model.dart';
-import '../models/ride_model.dart';
 import '../services/auth_service.dart';
 import '../services/ride_service.dart';
 import '../widgets/poliride_brand.dart';

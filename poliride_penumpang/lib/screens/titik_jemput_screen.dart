@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import '../models/campus_spot_model.dart';
-import '../models/ride_model.dart';
 import '../services/ride_service.dart';
 import '../widgets/osm_map_widget.dart';
 import 'konfirmasi_pesanan_screen.dart';

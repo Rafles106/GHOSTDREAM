@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/auth_service.dart';
 import '../services/ride_service.dart';
-import '../widgets/poliride_brand.dart';
 import 'beranda_screen.dart';
 import 'aktivitas_screen.dart';
 import 'chat_screen.dart';
@@ -18,7 +16,6 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   late int _currentIndex;
-  final AuthService _auth = AuthService();
   final RideService _rideService = RideService();
 
   @override
